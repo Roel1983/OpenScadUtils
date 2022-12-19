@@ -7,7 +7,7 @@ OPENSCAD                ?= openscad
 GIT                     ?= git
 
 # Git
-git_revision_nr         :=$(shell $(GIT) rev-parse --short HEAD 2> /dev/null || echo "")
+git_revision_nr         :=$(shell $(GIT) rev-parse HEAD 2> /dev/null || echo "")
 git_uncommitted_changes :=$(if $(shell $(GIT) status --untracked-files=no --porcelain 2> /dev/null || echo ""),+,)
 git_revision            :=$(git_revision_nr)$(git_uncommitted_changes)
 
@@ -27,10 +27,10 @@ cleanall:
 	rm -rf $(STLDIR)
 
 open: $(PARTS:%=%.scad)
-	$(OPENSCAD) $(PARTS:%=%.scad)
+	$(OPENSCAD) -D "GIT_REVISION=\"$(git_revision)?\"" $(PARTS:%=%.scad)
 
 openall:
-	$(OPENSCAD) $(shell find . -type f -name '*.scad') $(shell find . -type f -name '*.inc')
+	$(OPENSCAD) -D "GIT_REVISION=\"$(git_revision)?\"" $(shell find . -type f -name '*.scad') $(shell find . -type f -name '*.inc')
 
 ifeq ($(git_revision_nr),)
 $(STLDIR)/%.stl: %.scad

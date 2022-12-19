@@ -1,15 +1,17 @@
-GIT_REVISION = "";
+use <Git.scad>
 
 module CommitText(
-    size   = nozzle(8),
+    size   = undef,
+    len    = undef,
     font   = "Arial",
     halign = "center",
     valign = "center"
 ) {
-    text(GIT_REVISION,
+    _CommitText(
         size   = size,
+        len    = len,
         font   = font,
-        valign = valign,
-        halign = halign
+        halign = halign,
+        valign = valign
     );
 }

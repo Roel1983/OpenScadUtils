@@ -55,6 +55,22 @@ assert(
     ]]
 );
 
+function ConfigGetName(
+    config
+) = (
+    config[CONFIG_INDEX_NAME]
+);
+assert(
+    ConfigGetName(
+        MyConfig(
+            a = 10,
+            c = 30
+        )
+    )
+    ==
+    "MyConfig"
+);
+
 function ConfigGet(
     config,
     key,
@@ -127,3 +143,23 @@ function ConfigGetKeys(
     [for(item = config[CONFIG_INDEX_BODY]) item[CONFIG_ITEM_INDEX_KEY]]
 );
 assert(ConfigGetKeys(MyConfig(a= 10, b=MyConfig(b=20, c=30))) == ["a", "b", "c"]);
+
+function ConfigBodyToString(body, _index=0) = (
+    (_index < len(body)) ? (
+        let(item = body[_index])
+        str(
+            str(item[CONFIG_ITEM_INDEX_KEY], " = ", item[CONFIG_ITEM_INDEX_VALUE]),
+            "\n",
+            ConfigBodyToString(body, _index + 1)
+        )
+    ) : (
+        ""
+    )
+);
+
+function ConfigToString(config) = str(
+    "Config: ", ConfigGetName(config), "\n",
+    ConfigBodyToString(config[CONFIG_INDEX_BODY])
+);
+
+echo(ConfigToString(MyConfig(a= 10, b=MyConfig(b=20, c=30))));
