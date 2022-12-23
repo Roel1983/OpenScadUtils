@@ -88,7 +88,7 @@ module LinearExtrude(
         _z_from = optional(z_from, 0);
         _z_to   = optional(z_to,   0);
         if (_z_from > _z_to) {
-            LinearExtrude(z_from = _z_to, z_to = _z_from) children();
+            LinearExtrude(z_from = _z_to, z_to = _z_from) mirror(VEC_X) children();
         } else {
             translate([0, 0, _z_from]) {
                 linear_extrude(_z_to - _z_from) {
