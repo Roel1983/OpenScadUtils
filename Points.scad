@@ -36,14 +36,16 @@ function points_reverse(points) = [
     let(from = len(points) - 1, to = 0)
     for(i=[from:-1:to]) points[i]
 ];
+    
+function points_fn(r) = ($fn > 0 ? $fn : $fs > 0 ? r * 2 * PI / $fs : _ad / $fa);
 
 function points_of_circle(r, a1, a2) = [
     let(
         _a1   = (((a1 % 360) + 360) % 360),
         _ad   = ((((a2 - a1) % 360) + 360) % 360),
         _a2   = a1 + _ad,
-        fn    = $fn > 0 ? $fn : $fs > 0 ? r * 2 * PI / $fs : _ad / $fa,
-        max = abs(_a1 - _a2) / (360 / fn)
+        fn    = points_fn(r),
+        max = ceil(abs(_a1 - _a2) / (360 / fn))
     )
     for(i=[0:max]) (
         let(a = _a1 + (_a2 - _a1) * i / max)
