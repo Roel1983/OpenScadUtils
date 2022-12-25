@@ -15,6 +15,13 @@ translate(p) circle(1);
 mirror(vec) translate(p) circle(1);
 
 function point_mirror(vec, point) = (
+    assert(is_list(vec))
+    assert(len(vec) == 2 || (len(vec) == 3 && vec[2] == 0))
+    assert(is_num(vec[X]) && is_num(vec[Y]))
+    assert(is_list(point), str(point))
+    assert(len(point) >= 2)
+    assert(is_num(point[X]))
+    assert(is_num(point[Y]))
     let(
         M  = norm(vec),
         AA = -vec[X] / M,
@@ -25,9 +32,25 @@ function point_mirror(vec, point) = (
         point[Y] - 2 * BB * DD,
     ]
 );
-function points_mirror(vec, points) = [
-    for(p=points) point_mirror(vec, p)
-];
+function points_mirror(
+    vec,
+    points,
+    reverse    = false,
+    trim_first = 0,
+    trim_last  = 0
+) = (
+    let(
+        _start    = trim_first,
+        _end      = len(points) - 1 - trim_first,
+        start     = reverse ? _end : _start,
+        increment = reverse ? -1 : 1,
+        end       = reverse ? _start : _end
+    ) [
+        for (i = [start : increment : end]) let (p = points[i]) (
+            point_mirror(vec, p)
+        )
+    ]
+);
 function points_trim(points, first = 0, last = 0) = [
     let(from = first, to = len(points) - 1 - last)
     for(i=[from:to]) points[i]
