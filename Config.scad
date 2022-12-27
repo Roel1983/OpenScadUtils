@@ -163,3 +163,7 @@ function ConfigToString(config) = str(
 );
 
 echo(ConfigToString(MyConfig(a= 10, b=MyConfig(b=20, c=30))));
+
+function is_config(config, name) = (
+    is_list(config) && len(config) > CONFIG_INDEX_NAME && is_string(config[CONFIG_INDEX_NAME]) && config[CONFIG_INDEX_NAME] == name 
+);
