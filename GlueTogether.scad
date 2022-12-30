@@ -14,24 +14,35 @@ GlueTogether(xray=true) {
 
 
 
-module GlueTogether(xray = false) {
-    if (xray) {
-        color("red") {
-            for (i = [0:$children-2]) {
-                for(j = [i+1:$children-1]) {
-                    intersection() {
-                        children(i);
-                        children(j);
+module GlueTogether(xray = false, colorize = true) {
+    if($children >= 1) {
+        if (xray) {
+            
+            if($children >= 2) {
+                color("red") {
+                    for (i = [0:$children-2]) {
+                        for(j = [i+1:$children-1]) {
+                            intersection() {
+                                children(i);
+                                children(j);
+                            }
+                        }
                     }
                 }
             }
-        }
-        for (i = [0:$children-1]) {
-            color(unique_color(i, $children), alpha = .1) children(i);
-        }
-    } else {
-        for (i = [0:$children-1]) {
-            color(unique_color(i, $children)) children(i);
+            if (colorize) {
+                for (i = [0:$children-1]) {
+                    color(unique_color(i, $children), alpha = .1) children(i);
+                }
+            } else {
+                %for (i = [0:$children-1]) {
+                    children(i);
+                }
+            }
+        } else {
+            for (i = [0:$children-1]) {
+                color_if(colorize, unique_color(i, $children)) children(i);
+            }
         }
     }
 }

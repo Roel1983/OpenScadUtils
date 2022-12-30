@@ -36,3 +36,11 @@ function unique_color(number, count) = (
     ])
     colors[number % len(colors)]
 );
+
+module color_if(condition, c, alpha) {
+    if (condition) {
+        color(c = c, alpha = alpha) children();
+    } else {
+        children();
+    }
+}
