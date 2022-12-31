@@ -6,6 +6,11 @@ module mirror_copy(vec=undef) {
     mirror(vec) children();
 }
 
+module rotate_copy(a, vec=undef) {
+    children();
+    rotate(a, vec) children();
+}
+
 mirror_copy(VEC_X) {
     text("mirror_copy(VEC_X)");
 }
