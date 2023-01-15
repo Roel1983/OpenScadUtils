@@ -15,7 +15,7 @@ IMAGE_DESTINATION_EXTENSION ?= .png
 # Applications
 OPENSCAD                ?= openscad
 GIT                     ?= git
-OPENSCAD_ARGS            =
+OPENSCAD_ADDITION_ARGS  ?=
 
 # Git
 git_revision_nr         :=$(shell $(GIT) rev-parse HEAD 2> /dev/null || echo "")
@@ -57,13 +57,13 @@ $(PARTSDIR)/%.stl: %$(PART_SOURCE_EXTENSION)
 $(PARTSDIR)/%.stl: %$(PART_SOURCE_EXTENSION) | $(DEPDIR)/%.d
 	mkdir -p $(DEPDIR)/$(dir $*)
 	mkdir -p $(PARTSDIR)/$(dir $*)
-	$(OPENSCAD) -d $(DEPDIR)/$*.d $(OPENSCAD_ARGS) -D "IS_PART=1" -o $(PARTSDIR)/$*$(PART_DESTINATION_EXTENSION) $*$(PART_SOURCE_EXTENSION)
+	$(OPENSCAD) -d $(DEPDIR)/$*.d $(OPENSCAD_ARGS) -D "IS_PART=1" $(OPENSCAD_ADDITION_ARGS) -o $(PARTSDIR)/$*$(PART_DESTINATION_EXTENSION) $*$(PART_SOURCE_EXTENSION)
 
 $(IMAGESDIR)/%.png: %$(IMAGE_SOURCE_EXTENSION)
 $(IMAGESDIR)/%.png: %$(IMAGE_SOURCE_EXTENSION) | $(DEPDIR)/%.d
 	mkdir -p $(DEPDIR)/$(dir $*)
 	mkdir -p $(IMAGESDIR)/$(dir $*)
-	$(OPENSCAD) -d $(DEPDIR)/$*.d $(OPENSCAD_ARGS) -D "IS_IMAGE=1" -o $(IMAGESDIR)/$*$(IMAGE_DESTINATION_EXTENSION) $*$(IMAGE_SOURCE_EXTENSION)
+	$(OPENSCAD) -d $(DEPDIR)/$*.d $(OPENSCAD_ARGS) -D "IS_IMAGE=1" $(OPENSCAD_ADDITION_ARGS) -o $(IMAGESDIR)/$*$(IMAGE_DESTINATION_EXTENSION) $*$(IMAGE_SOURCE_EXTENSION)
 
 DEPFILES := $(PARTS:%=$(DEPDIR)/%.d) $(IMAGES:%=$(DEPDIR)/%.d)
 $(DEPFILES):
