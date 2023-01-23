@@ -59,6 +59,22 @@ function points_reverse(points) = [
     let(from = len(points) - 1, to = 0)
     for(i=[from:-1:to]) points[i]
 ];
+
+function points_mirror_copy(
+    vec,
+    points,
+    trim_first = 0,
+    trim_last  = 0
+) = concat(
+    points, 
+    points_mirror(
+        vec        = vec,
+        points     = points,
+        reverse    = true,
+        trim_first = trim_first,
+        trim_last  = trim_last
+    )
+);
     
 function points_fn(r) = ($fn > 0 ? $fn : $fs > 0 ? r * 2 * PI / $fs : _ad / $fa);
 
