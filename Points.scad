@@ -167,8 +167,8 @@ function points_with_offset(
         p1_next       = [
                             -relative_next[1] / norm(relative_next),
                              relative_next[0] / norm(relative_next)],
-        a_prev        = offset_prev * (p1_prev[1] + pow(p1_prev[0], 2)) / p1_prev[1],
-        a_next        = offset_next * (p1_next[1] + pow(p1_next[0], 2)) / p1_next[1],
+        a_prev        = offset_prev * (p1_prev[1] + pow(p1_prev[0], 2) / p1_prev[1]),
+        a_next        = offset_next * (p1_next[1] + pow(p1_next[0], 2) / p1_next[1]),
         b_prev        = -p1_prev[0] / p1_prev[1],
         b_next        = -p1_next[0] / p1_next[1]
     ) (
