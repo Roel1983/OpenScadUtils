@@ -1,5 +1,6 @@
 include <Debug.inc>
 include <Constants.inc>
+use <GetBound.scad>
 
 $vpr = [0,0,0];
 $vpt = [0.170204, 0, 0.0499167];
@@ -7,12 +8,7 @@ $vpd = 73.1102;
 
 DebugPoints(points_of_circle(r = 10, a1 = 30, a2 = 135));
 
-
-p   = [10 ,10];
-vec = [1,.5];
-
-translate(p) circle(1);
-mirror(vec) translate(p) circle(1);
+DebugPoints(points_of_square(x_from = 0, y_to = -5, size=[10, 5]));
 
 function point_mirror(vec, point) = (
     assert(is_list(vec))
@@ -94,6 +90,46 @@ function points_of_circle(r, a1, a2) = [
         ]
     )
 ];
+
+function points_of_square(
+    size,
+    bound,
+    x_size,
+    x_from,
+    x_to,
+    x_bound,
+    y_size,
+    y_from,
+    y_to,
+    y_bound
+) = (
+    let(_x_bound = get_bound(
+        index   = X,
+        prefix  = "x_",
+        size    = size,
+        bound   = bound,
+        a_size  = x_size,
+        a_bound = x_bound,
+        a_from  = x_from,
+        a_to    = x_to
+    ))
+    let(_y_bound = get_bound(
+        index   = Y,
+        prefix  = "y_",
+        size    = size,
+        bound   = bound,
+        a_size  = y_size,
+        a_bound = y_bound,
+        a_from  = y_from,
+        a_to    = y_to
+    ))
+    [
+        [_x_bound[0], _y_bound[1]],
+        [_x_bound[1], _y_bound[1]],
+        [_x_bound[1], _y_bound[0]],
+        [_x_bound[0], _y_bound[0]],
+    ]
+);
     
 function mirror_y_points_2d(points) = [
     for(p=points) [
@@ -109,3 +145,53 @@ function points_distances(points) = [
         norm(p1 - p0)
     )   
 ];
+    
+function points_with_offset(
+    points,
+    offset
+) = let(
+    point_count = len(points)
+) (
+    assert(is_num(offset) || (is_list(offset) && len(offset) == len(points)))
+    [for (i = [0 : point_count - 1]) let(,
+        i_prev        = (i + point_count - 1) % point_count,
+        i_next        = (i + 1) % point_count,
+        offset_prev   = is_list(offset) ? offset[i_prev] : offset,
+        offset_next   = is_list(offset) ? offset[i] : offset,
+        point         = points[i],
+        relative_prev = points[i_prev] - point,
+        relative_next = points[i_next] - point,
+        p1_prev       = offset_prev * [
+                             relative_prev[1] / norm(relative_prev),
+                            -relative_prev[0] / norm(relative_prev)],
+        p1_next       = offset_next * [
+                            -relative_next[1] / norm(relative_next),
+                             relative_next[0] / norm(relative_next)],
+        a_prev        = p1_prev[1] + pow(p1_prev[0], 2) / p1_prev[1],
+        a_next        = p1_next[1] + pow(p1_next[0], 2) / p1_next[1],
+        b_prev        = -p1_prev[0] / p1_prev[1],
+        b_next        = -p1_next[0] / p1_next[1]
+    ) (
+        (relative_prev[0] == 0) ? (
+            [
+                point[0] + p1_prev[0],
+                point[1] + a_next + p1_prev[0] * b_next
+            ]
+        ) : (relative_next[0] == 0) ? (
+            [
+                point[0] + p1_next[0],
+                point[1] + a_prev + p1_next[0] * b_prev
+            ]
+        ) : (p1_prev == p1_next) ? (
+            point + p1_prev
+        ) : (
+            let (
+                relative_x = (a_next - a_prev) / (b_prev - b_next),
+                relative_y = a_prev + b_prev * relative_x
+            ) (
+                echo(a_prev, a_next, b_prev, b_next, relative_x, relative_y)
+                point + [relative_x, relative_y]
+            )
+        )
+    )]  
+);
