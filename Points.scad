@@ -145,7 +145,7 @@ function points_distances(points) = [
         norm(p1 - p0)
     )   
 ];
-    
+
 function points_with_offset(
     points,
     offset
@@ -172,24 +172,26 @@ function points_with_offset(
         b_prev        = -p1_prev[0] / p1_prev[1],
         b_next        = -p1_next[0] / p1_next[1]
     ) (
-        (relative_prev[0] == 0) ? (
+        (p1_prev == p1_next) ? (
+            assert(
+                offset_prev == offset_next,
+                str("Segmented straight line, with different offsets at point[", i, "] = ", point))
+            point + p1_prev * offset_prev
+        ) : (relative_prev[0] == 0) ? (
             [
-                point[0] + p1_prev[0],
+                point[0] + p1_prev[0] * offset_prev,
                 point[1] + a_next + p1_prev[0] * b_next
             ]
         ) : (relative_next[0] == 0) ? (
             [
-                point[0] + p1_next[0],
+                point[0] + p1_next[0] * offset_next,
                 point[1] + a_prev + p1_next[0] * b_prev
             ]
-        ) : (p1_prev == p1_next) ? (
-            point + p1_prev
         ) : (
             let (
                 relative_x = (a_next - a_prev) / (b_prev - b_next),
                 relative_y = a_prev + b_prev * relative_x
             ) (
-                echo(a_prev, a_next, b_prev, b_next, relative_x, relative_y)
                 point + [relative_x, relative_y]
             )
         )

@@ -46,7 +46,6 @@ module ChamferedPolygon(
             assert(false, "'chamfer_angle' and 'chamfer' are conflicting")
         )
     )];
-    echo(offsets);
     
     points_2d_inner = (align=="inner")?points:points_with_offset(points, offset=-offsets);
     points_2d_outer = (align=="inner")?points_with_offset(points, offset=offsets):points;
